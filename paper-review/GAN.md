@@ -21,7 +21,7 @@ Developing a GAN for generating images requires both a discriminator convolution
 <br>
 
 ## 2. Sudo Code from official GAN paper [[Paper]](https://arxiv.org/pdf/1406.2661.pdf)
-<img src="img/1/1-sudocode.PNG" height=400 width=700>
+<img src="../img/04/1-sudocode.PNG" height=400 width=700>
 The above sudo-code are represented in the official GAN paper 'Generative Adversarial Networks,' written by Ian J. Goodfellow(2014). 
 
 In this sudo-code, the training process will be divided at two parts. The red box refers to <code>Discriminator(D)</code>, and the green box refers to <code>Generator(G)</code>.
@@ -30,7 +30,7 @@ In this sudo-code, the training process will be divided at two parts. The red bo
 <br>
 
 ## 3. GAN structure
-<img src="img/1/2-ganstructure.PNG" height=400 width=700>
+<img src="../img/04/2-ganstructure.PNG" height=400 width=700>
 
 
 ### (1) Training the discriminator
@@ -58,7 +58,7 @@ In this sudo-code, the training process will be divided at two parts. The red bo
 
 
 ### (3) Detail of GAN training
-<img src="img/1/3-graph.PNG" height=400 width=750>
+<img src="../img/04/3-graph.PNG" height=400 width=750>
 
 In this image from the official paper, we will see how the Latent variable after several iterations becomes a probability distribution. And, we could say that both the Discriminator and Generator reach out Nash equilibrium, which means GAN is fully trained. Once the training is completed, we can get a Generator model that can produce realistic-looking images.
 
