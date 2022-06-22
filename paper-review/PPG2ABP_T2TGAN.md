@@ -1,118 +1,97 @@
 ## Paper Review
-<b>Title : </b> <u>PPG2ABP: Translating Photoplethysmogram (PPG) Signals to Arterial Blood Pressure (ABP) Waveforms using Fully Convolutional Neural Networks</u> [[Paper]](https://arxiv.org/abs/2102.12245)
+<b>Title : </b> <u>Estimation of Continuous Blood Pressure From PPG via a Federated Learning Approach.</u> [[Paper]](https://arxiv.org/abs/2102.12245)
 <br>
-<b>Authors : </b> Nabil Ibtehaz, M. Sohel Rahman
+<b>Authors : </b> Eoin Brophy, Maarten De Vos, Geraldine Boylan, Tomás Ward
 <br>
-<b>Publication : </b> May 5, 2020
+<b>Publication : </b> February 25, 2021
 <br>
-<b>Read by heejipark : </b>: June, 15, 2022
+<b>Read by heejipark : </b>: June, 16, 2022
 
 ## Abstract
-#### Object 
-Cardiovascular diseases(CVD) is one of the most severe causes of mortality. In order to reduce an invasive process for monitoring the patient's status, this paper presented the method to predict the continous arterial blood pressure (ABP) waveform via a non-invasive approach using photoplethysmogram (PPG) signals.
+#### Object : 
+ABP is a method that requires invasive and quiet high cost. Therefore, the goal of the paper is to develop a framework that is capable of inferring ABP from a single optical photoplethysmorgram (PPG) sensor alone using time series-to-time series generative adversarial network (T2TGAN). 
 #### Result:
-The result of the model shows the PPG with a mean absolute error of 4604 mmHg, maintaining the shape, magnitutde and phase in unision.
-#### Note:
-computed values of DBP, MAP and SBP from the predicted ABP waveform shows more great performance rather than the exdisting works.
+T2TGAN is capable of high-quality continuous ABP generation from a PPG signal with a mean error of 2.54mmHg and a standard deviation of 23.7mmHg.
 
 ## 1. Introduction
-Phtoplethysmography (PPG) signal has bee being used for measurement of blood pressure. Its principle of mesurement is to detect the light absorption of skin and keep track of how mush light is reflected, which is the volume of blood flowing.
+Methods for non-invasively measuring continuous ABP
+- Pulse Transit Time (PTT) : is the time-interval taken for a pulse wave to travel between two arterial sites. PTT is defined as the difference in the R-wave interval of an ECG signal, which information is captured from a PPG signal.
+
+- Why we adopt PPG? <br>
+PPG is a devices that requires a single sensor and works by LEG into microvascular, measuring the amount of reflected/transmitted and absorbed light via photo-sensor and detecting the volume changes of blood over the cardiac cycle. By using the output from this sensor, we can determine a valid heart rate. 
 
 
-## 2. Materials and Methods
-#### (1) Dataset
-- Physionet's MIMIC II dataset (Multi-parameter Intelligent Monitoring in Intensive Care) in the UCI Machine Learning Repository (https://archive.ics.uci.edu/ml/datasets/Cuff-Less+Blood+Pressure+Estimation).
-- Both PPG and ABP signals are 125Hz, 8-bit precision
-- DBP ~ 50 mmHg and SBP ~ 200 mmHg <br>
-![Statistics of the Dataset](../img/01/1-dataset.PNG)
-- Used and predicted signal episodes of 8.192 seconds long
-- Total 1024 samples
+## 2. Related Work
+- Slapniˇcar et al. implemented a spectro-temporal deep neural network (DNN) to model the dependencies that exist between PPG and BP waveforms.
+- El Hajj and Kyriacou implement recurrent neural networks (RNNs) for estimation of BP from PPG only.
+- Ibtehaz and Rahman presented their PPG2ABP method that utilises a deep-supervised U-Net model that consists of an encoder and decoder network adopted for regression.
+- Sarkar and Etemad present their model CardioGAN that employs an adversarial training method to map PPG to ECG signals.
+- This paper implements a LSTM-CNN GAN model that is capable of generating continuous BP from a given PPG signal.
 
-#### (2) Proposed Methodology
-- PPG2ABP takes a PPG signal of Te seconds long, preprocessing attenuate the irregularities and noises
-- Using Approximation Netwrok, filtered the signal.
-- The Refinedment Network refined the overall waveform approximation
-- SBP, MAP and DBP can be computed using ABP wavefrom.
-![Pipeline of PPG2ABP](../img/01/2-methodology.PNG)
+## 3. Methodology
 
-#### (3) Preproscessing
-Used preprocessed data from Physionet's MIMIC II dataset.
+The authors design a T2T-GAN(Time series to Time series Generative Adversarial Network) model based on CycleGAN which is cpable of unpaired image-to-image translation.
+The T2T-GAN can translate from one time series modality to another usiing cycle-consistency losses.
+![T2T-GAN](../img/02/1-model.PNG)
+P2A stands for the generator transform function from PPG to ABP. Conversely, A2P stands for ABP to PPG.
 
-#### (4) Approximation Network
-Approximation Network is a one-dimensional deep supervised U-Net model which only consists of convolutional layers. U-Net is constructed using a symentric pair of Encoder Network and Decoder Network. The Encoder extracts spatial features from the input and the Decoder produce the segemtation map using the features. The paper used U-Net to perform regression based on one-dimensional signals instead of performing semantic segmentation on images. All the convolutional layers used ReLu function except the final layer and are batched normalized. The final layer used a linear activation function.
+#### (1) Computing Platform
+- Pytorch
+- Google colab
+
+#### (2) Dataset
+Example of Real PPG(top,blue) and ABP(bottom, orange) data.
+![Dataset](../img/02/2-dataset.PNG)
+<br>
+1. Train dataset : "Cuff-Less Blood Pressure Estimation"
+    - ECG, PPG, ABP 125Hz signals
+    - Used first 5 records and segmented them into 8-second intervals, which yieled 144000 training set (320 hours)
+    - Used last 2 records into 55000 validation samples (122 hours)
+    - [144000, 2, 1000] dimensional vector 
+2. Test dataset : "University of Queensland vital signs dataset: development of an accessible repository of anesthesia patient monitoring data for research"
+    - PPG, ABP 100 Hz signals
+    - Used Case 5 and segment the data into 10-second, which yields an [900, 2, 1000] (150 minutes)
+    
+#### (3) Model
+- Generator and Discriminator architecture
+- Generator
+
+|Structure|Val|
+|---|---|
+|Model|CycleGAN for time series data|
+|Layer type|Two layer(Gpa and Gap) - LSTM|
+|Layer|50 hidden units in each layer <br> Fully connected layer at the output|
+|Input Size|1000|
+|Activation Function|ReLu + Linear|
+
+- Discriminator
 
 |Structure|Type|
 |---|---|
 |Model|U-Net|
-|Layer type|Convolutional layer|
-|Constructure|Encoder + Decoder|
-|Dimention|One-dimensional signals|
-|Activation Function|ReLu + Linear|
+|Layer type|4-layer 1-dimensional CNN|
+|Layer|Fully connected layer|
+|Activation Function|Sigmoid|
 
-#### (5) Refinement Network
-Sometimes, there is outlier from the output of the Approximation Network. Therefore, the authors use improved version of the U-Net called 'MultiResUNet', which includes MultiRes blocks and Res paths in some cases. The other conditions including the number of layer and the activation fuctions are the same.
+![Model](../img/02/3-model.PNG)
 
-#### (6) SBP DBP calculation
-For interest, the writers compute the values of SBP, DBP and MAP using below formula.
-    - SBP = max(ABP)
-    - DBP = min(ABP)
-    - MAP = mean(ABP)
-Note that the above-mentioend ABP value is predicted from PPG2ABP model.
+#### (4) Training
+- Used distributed 20-client-models for training.
 
-
-## 3. Experiments
-#### (1) Selection of Models
-- U-Net - used as Approximation Network
-- MultiResUNet - used as Refined Netwrok
-- SegNet (low accuracy)
-- FCNN (low accuracy)
-#### (2) Selection of Loss Function
-- MAE (Mean Absolute Error) - choosed
-- MSE (Mean Squared Error) (low accuracy)
-
-#### (3) Effect of Number of Convolution Filters
-- Trade-off (high performance vs computational cost)
-- The number of folters as multiple of 64 for the U-Net.
-- The value of alpha is 2.5 for the MultiResUNet.
-
-#### (4) Effect of Deep Supervision
-Because of computational cost, the authors use the deep supervision only for U-Net model
-
-#### (5) Training Methodology
-- Optimizer: Adam 
-- 100 epochs
-
-#### (6) K-Fold Cross Validation
-- 10-fold corss validation
-- The ratio of 'train : validation' = 90 : 10
-
+#### (5) Evaluation
+- Used the mean arterial pressure (MAP) of generated samples as a evaluation indicator.
+- Compare true MAP measurments from the real ABP signal to calculated MAP from generated ABP by T2TGAN model. 
+- Quantity evaluation: Also used DTW(dynamic time warping), RMSE(root-mean-squared error) and PCC(Pearson Correlation Coefficient algorithms) as distance and similarity measures between real and generated time series BP sequence.
 
 ## 4. Result
-#### (1) Predicting ABP Waveform
-- Closely follows the ground truth waveform of the arterial blodd pressure. From experimental results it is evident that PPG2ABP can translate PPG signals to corresponding blood pressure waveforms, preserving the shape, magnitude and phase in unison.
-![prediction](../img/01/3-predicting.PNG)
-- Quantitatively, the mean absolute error of this blood pressure waveform construction is 4:604 +- 5:043mmHg over the entire test dataset. In addition, the mean absolute error of DBP, MAP and SBP prediction is 3:449 +- 6:147mmHg, 2:310 +- 4:437mmHg, and 5:727+-9:162 mmHg respectively.
-- Revise existed phase lag between PPG and ABP signals of MIMIC Database
+![Result](../img/02/4-result.PNG)
 
-#### (2) Inappropriate Signals
-PPG signals get easily corrupted by different types of artefacts. Moreover, cleansing PPG signals of these anomalies is challanging. Also, in this paper, the authors established the metric to measure the skewness based quality index.
-    
-#### (3) BHS Standard
-The British Hypertension Society (BHS) has introduced a structured protocol to assess blood pressure measuring devices and methods.
-![BHS](../img/01/3-BHS.PNG)
 
-#### (4) AAMI Standard
-The criterion set by AAMI standard requires the blood pressure measuring methods to have a mean error and standard deviation of less than 5 mmHg and 8 mmHg respectively.
-![AAMI](../img/01/3-AAMI.PNG)
+Quantity evaluation: 
+![Evaluation](../img/02/4-evaluation.PNG)
 
-#### (5) BP Classification Accuracy
-![BP](../img/01/3-BP.PNG)
-
-#### (6) Statistical Analyses
-![statistical](../img/01/4-statistical_analysis.PNG)
-
-## 5. Application
-Predicting the typical systolic and diastolic blood pressure values, etc.
+## 5. Conclusion
+- Results of a mean error of 2.54mmHg standard deviation of 23.7mmHg do not meet the AAMI criterion
 
 
 <br>
@@ -120,18 +99,17 @@ Predicting the typical systolic and diastolic blood pressure values, etc.
 ---
 
 ##### Unknown words in the paper
+- ischemic heart disease : 국소빈혈성 심장질병
+- strain : 부담, 중압감, v.(근육 등을)혹사하다, 안간힘을 쓰다
+- sphygmomanometer : 혈압계 (for BP - short time안에 구할 수 있음) 
+- arterial catheter : 동맥압 카테터 (주사기 팔에 꼽고 동맥압 검사 - invasive method but can know continuous BP measurement)
+- finapres : 피나프레스 장치 (continuous and unobtrusive BP수단이나 개개인의 continuous BP를 집에서 구할만한 도구는 아님.)
+- unobtrusive : 불필요하게 관심을 끌지 않는, 지나치게 야단스럽지 않은
+- cardiovascular : 심혈관의
 
-- menacing causes: 위협적인 원인
-- morbidity = mortality : 사망률
-- cardiovascular disease : 심혈관 질병
-- hypertension : 고혈압
-- catheter-based approach : 도관 기반 접근법
-- Hyperemia : 충혈
-- versatile : 다재다능한
-- attenuate : 약화시키다. 희석시키다
-- denoising : 잡음제어
-- negate : 무효화하다
-- auxiliary : 보조의
-- ECG : 심전도 = Electrocardiogram (ECG) is a simple test that can be used to check your heart's rhythm and electrical activity. Sensors attached to the skin are used to detect the electrical signals produced by your heart each time it beats.
+
+
+
+
 
 

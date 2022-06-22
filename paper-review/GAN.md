@@ -81,6 +81,8 @@ In this image from the official paper, we will see how the Latent variable after
 ## 5. Types of GAN
 <hr>
 
-|Type|Code|
-|----|----|
-|DCGAN|[[Pytorch]](./DCGAN/DCGAN_Pytorch.ipynb)<br> [[Tensorflow]](./DCGAN_Tensorflow.ipynb)|
+|Type|Detail|Code|
+|----|------|----|
+|DCGAN|[[DCGAN Detail](https://github.com/heejipark/Research-PPG2ABP-using-GAN/blob/master/paper-review/DCGAN.md)]|[[Pytorch]](https://github.com/heejipark/GAN/blob/master/DCGAN/DCGAN_Pytorch.ipynb)<br> [[Tensorflow]](https://github.com/heejipark/GAN/blob/master/DCGAN/DCGAN_Tensorflow.ipynb)|
+
+
