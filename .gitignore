@@ -1,12 +1,22 @@
-# ignore all files under 'paper/' directory
+# ignore all files under specific directory
 paper/
+.ipynb_checkpoints/
+__pycache__/
+datasets/
+
+# ignore .ipynb, .py files
+*.ipynb
+*.py
 
 
 # ignore .pdf file under 'paper' directory
 # Note that paper/paper1.pdf is ignored but paper/subdirectory/paper1.pdf is not ignored.
 paper/*.pdf
 
- 
 
 # ignore all .pdf file under 'paper' directory
 paper/**/*.pdf
+
+
+
+
