@@ -81,8 +81,11 @@ In this image from the official paper, we will see how the Latent variable after
 ## 5. Types of GAN
 <hr>
 
-|Type|Detail|Code|
-|----|------|----|
-|DCGAN|[[DCGAN Detail](https://github.com/heejipark/Research-PPG2ABP-using-GAN/blob/master/paper-review/DCGAN.md)]|[[Pytorch]](https://github.com/heejipark/GAN/blob/master/DCGAN/DCGAN_Pytorch.ipynb)<br> [[Tensorflow]](https://github.com/heejipark/GAN/blob/master/DCGAN/DCGAN_Tensorflow.ipynb)|
-
-
+|Type|Description|More|Code|
+|----|-----------|----|----|
+|DCGAN|DCGANs extend the idea of using convolutional layers both in the discriminator and the generator network.|[[DCGAN Detail](https://github.com/heejipark/Research-PPG2ABP-using-GAN/blob/master/paper-review/DCGAN.md)]|[[Pytorch]](https://github.com/heejipark/GAN/blob/master/DCGAN/DCGAN_Pytorch.ipynb)<br> [[Tensorflow]](https://github.com/heejipark/GAN/blob/master/DCGAN/DCGAN_Tensorflow.ipynb)|
+|WGAN|Replace the binary classification in the discriminator with the Wasserstein distance to alleviate mode collapse and vanishing gradient in GAN|||
+|Pix2Pix|Image to Image translation with paired data|||
+|CycleGAN|Image to Image translation with unpaired data|||
+|SeqGAN|Generate sequences with discrete variates using Reinforce algorithm and policy gradient|||
+|TimeGAN|Jointly training with a GAN loss, a reconstruction loss, and a sequential prediction loss.|||
