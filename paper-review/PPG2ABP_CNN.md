@@ -1,11 +1,12 @@
 ## Paper Review
-<b>Title : </b> <u>PPG2ABP: Translating Photoplethysmogram (PPG) Signals to Arterial Blood Pressure (ABP) Waveforms using Fully Convolutional Neural Networks</u> [[Paper]](https://arxiv.org/abs/2102.12245)
+<b>Title : </b> <u>PPG2ABP: Translating Photoplethysmogram (PPG) Signals to Arterial Blood Pressure (ABP) Waveforms using Fully Convolutional Neural Networks</u> [[Paper]](https://www.semanticscholar.org/paper/PPG2ABP%3A-Translating-Photoplethysmogram-%28PPG%29-to-Ibtehaz-Rahman/26238aa1d8ec51788f1b5e22aeb6ea88cac0c41f)
+
 <br>
 <b>Authors : </b> Nabil Ibtehaz, M. Sohel Rahman
 <br>
 <b>Publication : </b> May 5, 2020
 <br>
-<b>Read by heejipark : </b>: June, 15, 2022
+<b>Read date : </b>: June, 15, 2022
 
 ## Abstract
 #### Object 

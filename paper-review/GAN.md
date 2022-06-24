@@ -5,7 +5,7 @@
 <br>
 <b>Publication : </b> 2014
 <br>
-<b>Read by heejipark : </b>: June, 15, 2022
+<b>Read date : </b>: June, 20, 2022
 
 # GAN (Generative adversarial network)
 ** This repository aims to study a Generative adversarial network (GAN) using Pytorch as well as Tensorflow.

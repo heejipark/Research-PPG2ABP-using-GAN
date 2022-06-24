@@ -1,11 +1,11 @@
 ## Paper Review
-<b>Title : </b> <u>Estimation of Continuous Blood Pressure From PPG via a Federated Learning Approach.</u> [[Paper]](https://arxiv.org/abs/2102.12245)
+<b>Title : </b> <u>Estimation of Continuous Blood Pressure From PPG via a Federated Learning Approach.</u> [[Paper]](https://www.mdpi.com/1424-8220/21/18/6311)
 <br>
 <b>Authors : </b> Eoin Brophy, Maarten De Vos, Geraldine Boylan, Tomás Ward
 <br>
 <b>Publication : </b> February 25, 2021
 <br>
-<b>Read by heejipark : </b>: June, 16, 2022
+<b>Read date : </b>: June, 16, 2022
 
 ## Abstract
 #### Object : 

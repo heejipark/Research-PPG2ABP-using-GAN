@@ -1,11 +1,11 @@
 ## Paper Review
-<b>Title : </b> <u>Can Photoplethysmography Replace Arterial Blood Pressure in the Assessment of Blood Pressure?</u> [[Paper]](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6209968/)
+<b>Title : </b> <u>Can Photoplethysmography Replace Arterial Blood Pressure in the Assessment of Blood Pressure?</u> [[Paper]](https://doi.org/10.3390/jcm7100316)
 <br>
 <b>Authors : </b> Gloria Martínez, Newton Howard, Derek Abbott Kenneth Lim, Rabab Ward, Mohamed Elgendi
 <br>
 <b>Publication : </b> Oct 7, 2018
 <br>
-<b>Read: </b>: June, 2022
+<b>Read date : </b>: June, 17, 2022
 
 
 ## Abstract

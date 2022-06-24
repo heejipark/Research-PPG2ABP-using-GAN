@@ -1,3 +1,10 @@
+## Paper Review
+<b>Title : </b> <u>Deep Convolution GAN</u> [[Paper]](https://arxiv.org/abs/1511.06434)
+<br>
+<b>Publication : 2016</b> 
+<br>
+<b>Read date : </b>: June, 21, 2022
+
 # DCGAN
 Generative adversarial networks (GANs) really began to grow after the famous paper by Goodfellow et al. in 2014. DCGAN stands for Deep Convolution GAN. DCGAN and Vanila GAN have the same setup, but the only different point is that <B>DCGAN use CNNs</B>. [[DCGAN Paper]](https://arxiv.org/abs/1511.06434)
 

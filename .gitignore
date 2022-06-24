@@ -3,6 +3,7 @@ paper/
 .ipynb_checkpoints/
 __pycache__/
 datasets/
+temporary/
 
 # ignore .ipynb, .py files
 *.ipynb
