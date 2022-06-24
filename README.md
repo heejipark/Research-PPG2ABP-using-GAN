@@ -1,5 +1,5 @@
-# PPG2ABP using GAN
-This repository aims to research PPG2ABP using GAN.
+# PPG2ABP using GANs
+This repository aims to research PPG2ABP using GANs.
 
 # Terminology
 |Abbreviation|Word|Meaning|
