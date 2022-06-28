@@ -21,11 +21,6 @@ This repository aims to research PPG2ABP using GANs.
 |`2014`|Generative Adversarial Nets|<i>Advances in neural information processing systems 27.</i>||Goodfellow, Ian, et al|[[Paper]](https://arxiv.org/pdf/1406.2661.pdf)<br/>[[Review]](paper-review/GAN.md)||[[Github](https://github.com/goodfeli/adversarial)]|`GAN`|
 |`2015`|DCGAN - Unsupervised Representation Learning with Deep Convolutional Gnerative Adversarial Networks|<i>arXiv preprint arXiv:1511.06434.</i>||Radford, Metz, Chintala.|[[Paper]](https://arxiv.org/abs/1511.06434)<br/>[[Review]](paper-review/DCGAN.md)|||`DCGAN`|
 
-## Diffusion Model
-|Published|Paper|Journal|JIF|Authors|Links|Github|Tag|
-|---------|-----|-------|---|-------|-----|------|---|
-|`2021`|Diffusion Model |||]<br/>[[Review]](paper-review/Diffusion_model.md)|||`Diffusion Model`|
-
 ## PPP2ABP
 |Published|Paper|Journal|JIF|Authors|Links|Github|Tag|
 |---------|-----|-------|---|-------|-----|------|---|
@@ -36,10 +31,7 @@ This repository aims to research PPG2ABP using GANs.
 |`2022`|Novel Blood Pressure Waveform Reconstruction from Photoplethysmography using Cycle Generative Adversarial Networks|<i>arXiv:2201.09976</i>||Mehrabadi, Aqajari  Zargari.|[[Paper]](https://doi.org/10.48550/arXiv.2201.09976)</br>[[Review]](paper-review/PPG2ABP_CycleGAN.md)||`PPG2ABP` `CycleGAN`|
 
 
-# Signal Processing
-|Signal Processing|Note|
-|[FFT](signal-processing/Fast-Fourier-Transforms.ipynb)|Fast Fourier Transforms|
-|[Filter](signal-processing/Signal-Processing-Filter.ipynb)|Bandpass Filter <Br> Notch Filter|
+
 
 <br>
 
