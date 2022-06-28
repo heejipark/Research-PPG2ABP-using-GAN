@@ -4,10 +4,8 @@ paper/
 __pycache__/
 datasets/
 temporary/
+code/
 
-# ignore .ipynb, .py files
-*.ipynb
-*.py
 
 
 # ignore .pdf file under 'paper' directory
