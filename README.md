@@ -49,7 +49,7 @@ This repository aims to research PPG2ABP using GANs.
 
 ## Preprocessing
 1. Extracted 500 cases of PPG and ABP with 100Hz signals from vitalDB.
-2. Based on the several papers, I adapted to segment the data into 8-second intervals.
+2. Based on the several papers, I adopted to segment the data into 8-second intervals.
 3. In order to check the validity of the segment, I set the valid condition, which yielded 43744 datasets.
     <pre>
         ###########################################
@@ -72,7 +72,7 @@ This repository aims to research PPG2ABP using GANs.
 ![segment](./img/code/1-ppg-abp-graph.PNG) 
 6. In order to remove noise and make the wave smooth and I adopted the [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). Here are the examples using Golay filter with window size [15, 21, 27, 31] <br/>
     ![segment](./img/code/savgol_win.png)
-
+7. Therefore, each PPG and ABP dataset consists of the shape (43744, 800).
 
 
 <br/>
