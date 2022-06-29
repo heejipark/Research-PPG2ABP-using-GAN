@@ -73,6 +73,25 @@ This repository aims to research PPG2ABP using GANs.
 6. In order to remove noise and make the wave smooth and I adopted the [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). Here are the examples using Golay filter with window size [15, 21, 27, 31] <br/>
     ![segment](./img/code/savgol_win.png)
 7. Therefore, each PPG and ABP dataset consists of the shape (43744, 800).
+<br>
+
+##### Update
+3. I've tried to remove the noise in another way, adding addition validation condition.  which do not need to apply 
+    <pre>
+        ###########################################
+        # Check the validity of the segemnt
+        # Valid condition
+        # (1) The length of the segment must be guaranteed to be 8 seconds.
+        # (2) 0 <= PPG <= 100
+        # (3) 20 <= ABP <= 250
+        # (4) mstd_val(abp) > 0
+        # (5) diff(abp) < 12 and diff(ppg) < 12
+        # Else, remove
+        ###########################################
+    </pre>
+4. Even without applying the Savitzky-Golay filter, the ABP wave became softened just by adding a condition (diff(abp/ppg)<12).
+5. Here is one of the examples. 
+![segment](./img/code/wave2.PNG)
 
 
 <br/>
