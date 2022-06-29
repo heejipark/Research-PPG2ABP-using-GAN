@@ -10,7 +10,6 @@ This repository aims to research PPG2ABP using GANs.
 |ABP    |Arterial Blood Pressure|ABP is defined as the force that is exerted by the blood on the arterial wall.|
 |PTT    |Pulse Transit Time |PPT is the time taken for the arterial pulse pressure wave to travel from the aortic valve(대동맥 판막) to a peripheral site(말초).|
 
-
 <br>
 
 # Paper-Review 
@@ -24,7 +23,7 @@ This repository aims to research PPG2ABP using GANs.
 ## Diffusion Model
 |Published|Paper|Journal|JIF|Authors|Links|Github|Tag|
 |---------|-----|-------|---|-------|-----|------|---|
-|`2021`|Diffusion Model |||<br/>[[Review]]()|||`Diffusion Model`|
+|`2021`|Diffusion Model |||||||`Diffusion Model`|
 
 ## PPP2ABP
 |Published|Paper|Journal|JIF|Authors|Links|Github|Tag|
@@ -33,29 +32,55 @@ This repository aims to research PPG2ABP using GANs.
 |`2020`|Nonlinear Dynamic Modeling of Blood Pressure Waveform: Towards an Accurate Cuffless Monitoring System|<i>IEEE Sensors Journal, vol. 20, no. 10, pp. 5368-5378</i>||C. Landry, S. D. Peterson, A. Arami|[[Paper]](https://ieeexplore.ieee.org/document/8963724)</br>||`PPG2ECG`|
 |`2021`|Estimation of Continuous Blood Pressure from PPG via a Federated Learning Approach|<i>Sensors. 2021; 21(18):6311.</i>|3.576|Brophy, De Vos, Boylan, Ward|[[Paper]](https://www.mdpi.com/1424-8220/21/18/6311)<br/>[[Review]](paper-review/PPG2ABP_T2TGAN.md)|[[Github]](https://github.com/Brophy-E/T2TGAN)|`PPG2ABP` `T2TGAN`|
 |`2020`|PPG2ABP: Translating Photoplethysmogram (PPG) Signals to Arterial Blood Pressure (ABP) Waveforms using Fully Convolutional Neural Networks|<i>arXiv preprint arXiv:2005.01669.</i>||Ibtehaz, Rahman|[[Paper]](https://www.semanticscholar.org/paper/PPG2ABP%3A-Translating-Photoplethysmogram-%28PPG%29-to-Ibtehaz-Rahman/26238aa1d8ec51788f1b5e22aeb6ea88cac0c41f)<br/>[[Review]](paper-review/PPG2ABP_CNN.md)||`PPG2ABP` `CNN`|
-|`2022`|Novel Blood Pressure Waveform Reconstruction from Photoplethysmography using Cycle Generative Adversarial Networks|<i>arXiv:2201.09976</i>||Mehrabadi, Aqajari  Zargari.|[[Paper]](https://doi.org/10.48550/arXiv.2201.09976)</br>[[Review]](paper-review/PPG2ABP_CycleGAN.md)||`PPG2ABP` `CycleGAN`|
+|`2022`|Novel Blood Pressure Waveform Reconstruction from Photoplethysmography using Cycle Generative Adversarial Networks|<i>EMBC22'(IEEE Engineering in Medicine & Biology Society (EMBC))</i>||Mehrabadi, Aqajari  Zargari.|[[Paper]](https://doi.org/10.48550/arXiv.2201.09976)</br>[[Review]](paper-review/PPG2ABP_CycleGAN.md)||`PPG2ABP` `CycleGAN`|
 
+<br>
 
 # Signal Processing
 |Signal Processing|Note|
 |-----------------|----|
-|[FFT](signal-processing/Fast-Fourier-Transforms.ipynb)|Fast Fourier Transforms|
-|[Filter](signal-processing/Signal-Processing-Filter.ipynb)|Bandpass Filter <Br> Notch Filter|
+|Fast Fourier Transforms|[Fast Fourier Transforms](signal-processing/Fast-Fourier-Transforms.ipynb)|
+|Filter|[Bandpass Filter and Notch Filter](signal-processing/Signal-Processing-Filter.ipynb)|
+
 
 <br>
 
-## Progress
-1. I extracted 500 cases of PPG and ABP with 100Hz signals from vitalDB. 
-2. According to the papers, I segmented them into 8-second intervals
-3. Based on several papers, I set the range of PPG from 0 to 100 and the range of ABP from 20 to 200, which yielded 362125 datasets.
-4. Here is one of the segmentation examples. <br/>
-![segment](./img/code/1-ppg-abp-graph.PNG)
+# Progress
 
+## Preprocessing
+1. Extracted 500 cases of PPG and ABP with 100Hz signals from vitalDB.
+2. Based on the several papers, I adapted to segment the data into 8-second intervals.
+3. In order to check the validity of the segment, I set the valid condition, which yielded 43744 datasets.
+    <pre>
+        ###########################################
+        # Check the validity of the segemnt
+        # Valid condition
+        # (1) The length of the segment must be guaranteed to be 8 seconds.
+        # (2) 0 <= PPG <= 100
+        # (3) 20 <= ABP <= 250
+        # (4) mstd_val(abp) > 0
+        # Else, remove
+        ###########################################
+    </pre>
+4. Statistics
+   - The number of the valid cases is 43744.
+   - Maximum value of PPG is 96.8018 
+   - Minimum value of PPG is 0.0309719
+   - Maximum value of ABP is 249.904 
+   - Minimum value of ABP is 20.814
+5. Here is one of the examples. 
+![segment](./img/code/1-ppg-abp-graph.PNG) 
+6. In order to remove noise and make the wave smooth and I adopted the [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). Here are the examples using Golay filter with window size [15, 21, 27, 31] <br/>
+    ![segment](./img/code/savgol_win.png)
+
+
+
+<br/>
 <br/>
 
 #### Note
 - Need to recheck the range of PPG and ABP
 - Need to set more filters to normalize the signals.
-- Need to check how to build a time-series GAN model.
-    - Time-series data is required to guarantee long-term dependency.
+- Need to check how to build CycleGAN model.
+    - 2 Generator and 2 Discriminator
 
