@@ -17,8 +17,11 @@ This repository aims to research PPG2ABP using GANs.
 ## GANs
 |Published|Paper|Journal|JIF|Authors|Links|Github|Tag|
 |---------|-----|-------|---|-------|-----|------|---|
-|`2014`|Generative Adversarial Nets|<i>Advances in neural information processing systems 27.</i>||Goodfellow, Ian, et al|[[Paper]](https://arxiv.org/pdf/1406.2661.pdf)<br/>[[Review]](paper-review/GAN.md)||[[Github](https://github.com/goodfeli/adversarial)]|`GAN`|
-|`2015`|DCGAN - Unsupervised Representation Learning with Deep Convolutional Gnerative Adversarial Networks|<i>arXiv preprint arXiv:1511.06434.</i>||Radford, Metz, Chintala.|[[Paper]](https://arxiv.org/abs/1511.06434)<br/>[[Review]](paper-review/DCGAN.md)|||`DCGAN`|
+|`2014`|Generative Adversarial Nets|<i>Advances in neural information processing systems 27.</i>||Goodfellow, Ian, et al|[[Paper]](https://arxiv.org/pdf/1406.2661.pdf)<br/>[[Review]](paper-review/GAN.md)|[[Github](https://github.com/goodfeli/adversarial)]|`GAN`|
+|`2015`|DCGAN - Unsupervised Representation Learning with Deep Convolutional Gnerative Adversarial Networks|<i>arXiv preprint arXiv:1511.06434.</i>||Radford, Metz, Chintala.|[[Paper]](https://arxiv.org/abs/1511.06434)<br/>[[Review]](paper-review/DCGAN.md)||`DCGAN`|
+|`2018`|Pix2Pix - Image-to-Image Translation with Conditional Adversarial Networks|<i> IEEE International Conference on Computer Vision (ICCV), 2017</i>||Phillip Isola, Jun-Yan Zhu, Tinghui Zhou, Alexei A Efros|[[Paper]](https://arxiv.org/pdf/1611.07004.pdf)<br/>[[Review]](paper-review/Pix2Pix.md)|[[Github]](https://github.com/phillipi/pix2pix)|`Pix2Pix`|
+|`2020`|CycleGAN - Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks|<i> IEEE International Conference on Computer Vision (ICCV), 2017</i>||Jun-Yan Zhu, Taesung Park, Phillip Isola, and Alexei A. Efros|[[Paper]](https://arxiv.org/pdf/1703.10593.pdf)<br/>[[Review]](paper-review/cycleGAN.md)||`CycleGAN`|
+
 
 ## Diffusion Model
 |Published|Paper|Journal|JIF|Authors|Links|Github|Tag|

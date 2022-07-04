@@ -66,7 +66,14 @@ Combination of an adversarial loss and a cyclic consistency loss
 #### (2) Cyclic Consistency Loss
 <img src='./../img/07/lossfunction4.PNG'>
 
-#### (3) Final Loss
+#### (3) 
+
+
+
+
+
+
+Final Loss
 <img src='./../img/07/lossfunction5.PNG'>
 
 ## 4. Experiments
