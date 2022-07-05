@@ -52,16 +52,24 @@ This repository aims to research PPG2ABP using GANs.
 <br>
 
 # Progress
+|datasets |File name|Num#|Max(PPG)|MIN(PPG)|MAX(ABP)|MIN(ABP)|
+|---------|---------|----|--------|--------|--------|--------|
+|20sec    |ppg_abp_datasets_20.npz|129590|97.1967|0.0309719|249.904|20.814|
+|8sec+diff|ppg_abp_datasets_3.npz|43744|96.8018|0.0309719|249.904|20.814|
 
-## Preprocessing
+    - 20sec         : 
+    - 8sec          :  (43744)
+    - 8sec + diff   : 
+
+## Preprocessing (Update 07.05. 2022)
 1. Extracted 500 cases of PPG and ABP with 100Hz signals from vitalDB.
 2. Based on the several papers, I adopted to segment the data into 8-second intervals.
-3. In order to check the validity of the segment, I set the valid condition, which yielded 43744 datasets.
+3. In order to check the validity of the segment, I set the valid condition, which yielded 129590 datasets.
     <pre>
         ###########################################
         # Check the validity of the segemnt
         # Valid condition
-        # (1) The length of the segment must be guaranteed to be 8 seconds.
+        # (1) The length of the segment must be guaranteed to be 20 seconds.
         # (2) 0 <= PPG <= 100
         # (3) 20 <= ABP <= 250
         # (4) mstd_val(abp) > 0
@@ -69,19 +77,21 @@ This repository aims to research PPG2ABP using GANs.
         ###########################################
     </pre>
 4. Statistics
-   - The number of the valid cases is 43744.
-   - Maximum value of PPG is 96.8018 
+   - The number of the valid cases is 129590.
+   - Maximum value of PPG is 97.1967 
    - Minimum value of PPG is 0.0309719
    - Maximum value of ABP is 249.904 
    - Minimum value of ABP is 20.814
 5. Here is one of the examples. 
-![segment](./img/code/1-ppg-abp-graph.PNG) 
-6. In order to remove noise and make the wave smooth and I adopted the [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). Here are the examples using Golay filter with window size [15, 21, 27, 31] <br/>
-    ![segment](./img/code/savgol_win.png)
+![segment](./img/code/before_savgol_win_20sec.png) 
+6. In order to remove noise and make the wave smooth and I adopted the [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). Here is an examples using Golay filter.
+![segment](./img/code/after_savgol_win_20sec.png) <br>
+Also, here are the examples using Golay filter with multiple window size [15, 21, 27, 31] <br/>
+    ![segment](./img/code/4color_savgol_win.png)
 7. Therefore, each PPG and ABP dataset consists of the shape (43744, 800).
 <br>
 
-##### Update
+##### Alternate Filtering
 3. I've tried to remove the noise in another way, adding addition validation condition.  which do not need to apply 
     <pre>
         ###########################################
@@ -103,9 +113,8 @@ This repository aims to research PPG2ABP using GANs.
 <br/>
 <br/>
 
-#### Note
-- Need to recheck the range of PPG and ABP
-- Need to set more filters to normalize the signals.
-- Need to check how to build CycleGAN model.
+#### Note (Update 07.05. 2022)
+- Need to check how to build CycleGAN model. 
     - 2 Generator and 2 Discriminator
+- Need to check torch size
 
