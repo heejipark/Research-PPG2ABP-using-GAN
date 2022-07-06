@@ -54,14 +54,12 @@ This repository aims to research PPG2ABP using GANs.
 # Progress
 |datasets |File name|Num#|Max(PPG)|MIN(PPG)|MAX(ABP)|MIN(ABP)|
 |---------|---------|----|--------|--------|--------|--------|
+|20sec+30ppl|ppg_abp_datasets_20_30ppl.npz|11550|96.8018|0.0309719|249.904|20.814|
 |20sec    |ppg_abp_datasets_20.npz|129590|97.1967|0.0309719|249.904|20.814|
 |8sec+diff|ppg_abp_datasets_3.npz|43744|96.8018|0.0309719|249.904|20.814|
 
-    - 20sec         : 
-    - 8sec          :  (43744)
-    - 8sec + diff   : 
 
-## Preprocessing (Update 07.05. 2022)
+## Preprocessing
 1. Extracted 500 cases of PPG and ABP with 100Hz signals from vitalDB.
 2. Based on the several papers, I adopted to segment the data into 8-second intervals.
 3. In order to check the validity of the segment, I set the valid condition, which yielded 129590 datasets.
@@ -83,12 +81,12 @@ This repository aims to research PPG2ABP using GANs.
    - Maximum value of ABP is 249.904 
    - Minimum value of ABP is 20.814
 5. Here is one of the examples. 
-![segment](./img/code/before_savgol_win_20sec.png) 
-6. In order to remove noise and make the wave smooth and I adopted the [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). Here is an examples using Golay filter.
-![segment](./img/code/after_savgol_win_20sec.png) <br>
-Also, here are the examples using Golay filter with multiple window size [15, 21, 27, 31] <br/>
+    ![segment](./img/code/before_savgol_win_20sec.png) 
+6. In order to remove noise and make the wave smooth, I adopted the [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). I applied the Golay filter into the above data. Compared to the waveform above(5), the waveform below is definitely much smoother.
+    ![segment](./img/code/after_savgol_win_20sec.png) <br>
+Also, here are the examples using the Golay filter with multiple window sizes [15, 21, 27, 31] <br/>
     ![segment](./img/code/4color_savgol_win.png)
-7. Therefore, each PPG and ABP dataset consists of the shape (43744, 800).
+7. Therefore, each PPG and ABP dataset consists of a shape (129590, 2000).
 <br>
 
 ##### Alternate Filtering
@@ -109,12 +107,24 @@ Also, here are the examples using Golay filter with multiple window size [15, 21
 5. Here is one of the examples.  </br>
 ![segment](./img/code/wave2.PNG)
 
-
 <br/>
 <br/>
 
-#### Note (Update 07.05. 2022)
-- Need to check how to build CycleGAN model. 
-    - 2 Generator and 2 Discriminator
-- Need to check torch size
+
+#### Note (Update 07.07. 2022)
+- Built a GAN model but its' performance is not great so far.
+- Need to check min-max data nomalization
+- Need to check how to set a docker with Pytorch and cuda
+
+<br>
+<br>
+
+- GPU 문제로 colab을 사용하고 있어서, 현재 epoch 15, 30명의 환자 데이터로만 돌린 결과임.
+- ![segment](./img/code/realVSfakeAfterGOLfilter.png)
+- 결과를 보았을 때, 내가 생각한 문제점은
+- 첫번째, ABP의 범위가 기존 real 데이터와 비교했을 때 너무 다르다. 
+- 현재 data loader 설정할 때, 논문에서 설정한 것처럼 shuffle=True로 해두었는데, 이 부분이 참 이상하다. unpaired가 학습이 잘되는게 의심스러움. shuffle=False로도 돌려보자.
+- Generator에 Tanh()을 설정해놓은 상태임
+- 데이터셋을 설정할 때, min-max normalization을 직접 처리했는데, 이게 Generator 모델 내의 normalization 레이어와 유사한 작업을 반복하는 것이 아닌지 확인해봐야 함.
+
 
