@@ -128,3 +128,26 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
 - 데이터셋을 설정할 때, min-max normalization을 직접 처리했는데, 이게 Generator 모델 내의 normalization 레이어와 유사한 작업을 반복하는 것이 아닌지 확인해봐야 함.
 
 
+#### Note (Update 07.08. 2022)
+- colab + epoch10 + 30명의 환자 데이터
+- ![segment](./img/code/realVSfake-dataNum1.png)
+- 모델 형태를 변경시켜서 격차를 어제보다는 줄어들게 만듬, 하지만 여전히 크다!
+- 파일명: 02-Preprocessing_e10_30ppl_July07_0506PM.ipynb
+- 어제와의 차이점
+
+1. Generator의 첫번째 Conv 층에 Normalization과 activation 제거
+```python
+    # Initial convolution block       
+    self.model1 = nn.Sequential(
+        nn.ReflectionPad1d(1),
+        nn.Conv1d(input_nc, 64, 3),
+        #nn.InstanceNorm1d(64),
+        #nn.LeakyReLU(inplace=True)
+    )
+```
+2. Residual blocks의 갯수를 논문처럼 3 -> 9개로 늘림 (갯수 증가로 인해 학습시간이 epoch마다 2.5배씩 증가 (2분에서 5분))
+
+3. loader_train, loader_test의 shuffle을 둘 다 False로 지정함.
+
+
+
