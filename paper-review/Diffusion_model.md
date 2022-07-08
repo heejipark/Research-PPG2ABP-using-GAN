@@ -1,4 +1,25 @@
-#### Discriminative model VS Generative model
+
+## Diffusion model이란?
+Diffusion model은 열역학에서 아이디어를 가져온 모델로 크게 2단계로 나뉜다.
+1. 먼저 주어진 데이터 x에 점점 noise를 추가하는데, 이 과정을 Diffusion process라고 한다. 
+2. 그 다음 앞에서 정의한 Diffusion process를 reverse한 process를 계산한다. 이 과정은 noise data에서 점점 noise를 제거하는 과정이다. 딥러닝 모델을 이용해 이 reverse diffusion process를 학습하는 것으로 이 과정을 Reverse diffusion process라고 한다.
+
+<hr>
+
+1. Diffusion process <br>
+<img src="./../img/diffusion/01.PNG" height=400 width=750> <br>
+Diffusion process는 주어진 데이터 x에 time step마다 noise를 추가하는 것이다. 0 step에서 noise를 추가하면서 T step으로 가고 각 step에서 noise가 추가된 것이 latent variable zt이다. <B>Diffusion process는 지정한 noise ratio 값 beta subscript t을 time step마다 추가하는 것이고 관련된 분포를 모두 가우스분포(Gaussian distribution)로 표현할 수 있다. 여기서는 따로 학습이 진행되지 않는다.</b>
+<br>
+<br>
+
+2. Reverse Diffusion process <br>
+<img src="./../img/diffusion/02.PNG" height=400 width=750> <br>
+앞의 diffusion process 반대 방향의 process는 noise data에서 원래의 데이터 x로 돌아오는 과정이다. 즉 generative model이다. Diffusion process는 직접 Gaussian distribution으로 정의했지만 반대 방향인 Reverse Diffusion process를 표현하는 distribution들은 모르는 상태이다. 모델을 통해 모르는 Reverse Diffusion process를 학습하는 것이다.
+<br>
+<hr>
+<br><br>
+
+## Discriminative model VS Generative model
 <code>Discriminative models</code> usually predict separate quantities given the data. On the other hand, <code>Generatrive models</code> allow you to synthesize novel data that is different from the real data but still looks just as realistic.
 
 Now, I'm going to write more detail about one of the Generative models, a Diffusion Model.
