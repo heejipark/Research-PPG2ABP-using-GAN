@@ -111,7 +111,7 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
 <br/>
 
 
-#### Note (Update 07.07. 2022)
+#### Note (Update 07.06. 2022)
 - Built a GAN model but its' performance is not great so far.
 - Need to check min-max data nomalization
 - Need to check how to set a docker with Pytorch and cuda
@@ -128,7 +128,7 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
 - 데이터셋을 설정할 때, min-max normalization을 직접 처리했는데, 이게 Generator 모델 내의 normalization 레이어와 유사한 작업을 반복하는 것이 아닌지 확인해봐야 함.
 
 
-#### Note (Update 07.08. 2022)
+#### Note (Update 07.07. 2022)
 - colab + epoch10 + 30명의 환자 데이터
 - ![segment](./img/code/realVSfake-dataNum1.png)
 - 모델 형태를 변경시켜서 격차를 어제보다는 줄어들게 만듬, 하지만 여전히 크다!
@@ -148,6 +148,29 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
 2. Residual blocks의 갯수를 논문처럼 3 -> 9개로 늘림 (갯수 증가로 인해 학습시간이 epoch마다 2.5배씩 증가 (2분에서 5분))
 
 3. loader_train, loader_test의 shuffle을 둘 다 False로 지정함.
+
+
+
+#### Note (Update 07.08. 2022)
+- colab + epoch10 + 30명의 환자 데이터
+- ![segment](./img/code/03-generatedimage.png)
+- 어제와의 차이점
+1. GAN LOSS 구하는 계산을 변경함 -> 데이터 범위가 유사해짐
+```python
+    # 1. GAN loss
+    loss_ppg = criterion_gan(discFakeppg, real_ppg_3d)
+    loss_abp = criterion_gan(discFakeabp, real_abp_3d)
+```
+
+
+#### To do list
+1. dataset 범위 전체로 
+2. epoch 늘리고
+3. Optimizer 변경
+4. lr scheduler 사용
+
+
+
 
 
 
