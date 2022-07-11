@@ -2,10 +2,10 @@
 paper/
 .ipynb_checkpoints/
 __pycache__/
-datasets/
 temporary/
 coding/
 colab/
+datasets/
 
 
 # ignore .pdf file under 'paper' directory

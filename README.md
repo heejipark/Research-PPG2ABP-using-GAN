@@ -10,7 +10,11 @@ This repository aims to research PPG2ABP using GANs.
 |ABP    |Arterial Blood Pressure|ABP is defined as the force that is exerted by the blood on the arterial wall.|
 |PTT    |Pulse Transit Time |PPT is the time taken for the arterial pulse pressure wave to travel from the aortic valve(대동맥 판막) to a peripheral site(말초).|
 
-<br>
+<br/>
+
+![segment](./img/code/qrs.png) 
+<br/>
+<br/>
 
 # Paper-Review 
 
@@ -54,15 +58,15 @@ This repository aims to research PPG2ABP using GANs.
 # Progress
 |datasets |File name|Num#|Max(PPG)|MIN(PPG)|MAX(ABP)|MIN(ABP)|
 |---------|---------|----|--------|--------|--------|--------|
+|20sec+100ppl+diff+matching|ppg_abp_datasets_peak_50_without_filter.npz|21791|96.8018|0.0309719|213.368|21.8015|
+|20sec+100ppl+plain+matching|ppg_abp_datasets_peak_50_with_filter.npz|24137|96.8018|0.0309719|249.904|20.814|
 |20sec+30ppl|ppg_abp_datasets_20_30ppl.npz|11550|96.8018|0.0309719|249.904|20.814|
-|20sec    |ppg_abp_datasets_20.npz|129590|97.1967|0.0309719|249.904|20.814|
-|8sec+diff|ppg_abp_datasets_3.npz|43744|96.8018|0.0309719|249.904|20.814|
 
 
 ## Preprocessing
-1. Extracted 500 cases of PPG and ABP with 100Hz signals from vitalDB.
-2. Based on the several papers, I adopted to segment the data into 8-second intervals.
-3. In order to check the validity of the segment, I set the valid condition, which yielded 129590 datasets.
+1. Extracted 100 cases of PPG and ABP with 100Hz signals from vitalDB.
+2. Based on the several papers, I adopted to segment the data into 20-second intervals.
+3. In order to check the validity of the segment, I set the valid condition.
     <pre>
         ###########################################
         # Check the validity of the segemnt
@@ -74,23 +78,16 @@ This repository aims to research PPG2ABP using GANs.
         # Else, remove
         ###########################################
     </pre>
-4. Statistics
-   - The number of the valid cases is 129590.
-   - Maximum value of PPG is 97.1967 
-   - Minimum value of PPG is 0.0309719
-   - Maximum value of ABP is 249.904 
-   - Minimum value of ABP is 20.814
 5. Here is one of the examples. 
     ![segment](./img/code/before_savgol_win_20sec.png) 
 6. In order to remove noise and make the wave smooth, I adopted the [Savitzky–Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). I applied the Golay filter into the above data. Compared to the waveform above(5), the waveform below is definitely much smoother.
     ![segment](./img/code/after_savgol_win_20sec.png) <br>
 Also, here are the examples using the Golay filter with multiple window sizes [15, 21, 27, 31] <br/>
     ![segment](./img/code/4color_savgol_win.png)
-7. Therefore, each PPG and ABP dataset consists of a shape (129590, 2000).
 <br>
 
 ##### Alternate Filtering
-3. I've tried to remove the noise in another way, adding addition validation condition.  which do not need to apply 
+3. I've tried to remove the noise in another way, adding addition validation condition.
     <pre>
         ###########################################
         # Check the validity of the segemnt
@@ -99,11 +96,11 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
         # (2) 0 <= PPG <= 100
         # (3) 20 <= ABP <= 250
         # (4) mstd_val(abp) > 0
-        # (5) diff(abp) < 12 and diff(ppg) < 12
+        # (5) diff(abp) < 15 and diff(ppg) < 15
         # Else, remove
         ###########################################
     </pre>
-4. Even without applying the Savitzky-Golay filter, the ABP wave became softened just by adding a condition (diff(abp/ppg)<12).
+4. Even without applying the Savitzky-Golay filter, the ABP wave became softened just by adding a condition (diff(abp/ppg)<15).
 5. Here is one of the examples.  </br>
 ![segment](./img/code/wave2.PNG)
 
@@ -111,14 +108,10 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
 <br/>
 
 
+<hr>
+
+### Daily Note
 #### Note (Update 07.06. 2022)
-- Built a GAN model but its' performance is not great so far.
-- Need to check min-max data nomalization
-- Need to check how to set a docker with Pytorch and cuda
-
-<br>
-<br>
-
 - GPU 문제로 colab을 사용하고 있어서, 현재 epoch 15, 30명의 환자 데이터로만 돌린 결과임.
 - ![segment](./img/code/realVSfakeAfterGOLfilter.png)
 - 결과를 보았을 때, 내가 생각한 문제점은
@@ -129,48 +122,74 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
 
 
 #### Note (Update 07.07. 2022)
-- colab + epoch10 + 30명의 환자 데이터
-- ![segment](./img/code/realVSfake-dataNum1.png)
+- colab + epoch10 + 30명의 환자 데이터 <br/>
+ ![segment](./img/code/realVSfake-dataNum1.png) <br/>
 - 모델 형태를 변경시켜서 격차를 어제보다는 줄어들게 만듬, 하지만 여전히 크다!
 - 파일명: 02-Preprocessing_e10_30ppl_July07_0506PM.ipynb
 - 어제와의 차이점
-
 1. Generator의 첫번째 Conv 층에 Normalization과 activation 제거
-```python
-    # Initial convolution block       
-    self.model1 = nn.Sequential(
-        nn.ReflectionPad1d(1),
-        nn.Conv1d(input_nc, 64, 3),
-        #nn.InstanceNorm1d(64),
-        #nn.LeakyReLU(inplace=True)
-    )
-```
+    ```python
+        # Initial convolution block       
+        self.model1 = nn.Sequential(
+            nn.ReflectionPad1d(1),
+            nn.Conv1d(input_nc, 64, 3),
+            #nn.InstanceNorm1d(64),
+            #nn.LeakyReLU(inplace=True)
+        )
+    ```
 2. Residual blocks의 갯수를 논문처럼 3 -> 9개로 늘림 (갯수 증가로 인해 학습시간이 epoch마다 2.5배씩 증가 (2분에서 5분))
-
 3. loader_train, loader_test의 shuffle을 둘 다 False로 지정함.
 
 
-
 #### Note (Update 07.08. 2022)
-- colab + epoch10 + 30명의 환자 데이터
-- ![segment](./img/code/03-generatedimage.png)
+- colab + epoch10 + 30명의 환자 데이터 <br/>
+    ![segment](./img/code/03-generatedimage.png) <br/>
 - 어제와의 차이점
 1. GAN LOSS 구하는 계산을 변경함 -> 데이터 범위가 유사해짐
-```python
-    # 1. GAN loss
-    loss_ppg = criterion_gan(discFakeppg, real_ppg_3d)
-    loss_abp = criterion_gan(discFakeabp, real_abp_3d)
-```
+    ```python
+        # 1. GAN loss
+        loss_ppg = criterion_gan(discFakeppg, real_ppg_3d)
+        loss_abp = criterion_gan(discFakeabp, real_abp_3d)
+    ```
 
+#### Note (Update 07.11. 2022)
+- colab + epoch 20 + 100명의 환자 데이터
+- 어제와의 차이점
+1. PPG 첫번째 peak와 ABP 두번째 peak를 매칭시킴.
+    - ![segment](./img/code/matching.PNG)
+    ```python
+        # Check ppg peak point
+        ppg = pyvital.arr.exclude_undefined(ppg)
+        ppg_peaks = pyvital.arr.detect_peaks(ppg, 100) 
+                
+        # Check abp peak point
+        abp = pyvital.arr.exclude_undefined(abp)
+        abp_peaks = pyvital.arr.detect_peaks(abp, 100)
+                
+        # Mapping the first peak of ppg and the second peak of ABP
+        try:
+            pid, aid = ppg_peaks[0][0], abp_peaks[0][1]
+            new_ppg = ppg[pid:pid+SEC_EXT*SRATE]
+            new_abp = abp[aid:aid+SEC_EXT*SRATE]
+            if len(new_ppg) != SEC_EXT*SRATE or len(new_abp) != SEC_EXT*SRATE:
+                continue            
+            ppg_sets.append(new_ppg)
+            abp_sets.append(new_abp) 
+            case_sample += 1
+        except:
+            continue   
+    ```
+2. 데이터 셋을 두가지로 만들어봄
+    - PPG와 ABP에 diff를 적용 (ppg_abp_datasets_peak_50_without_filter.npz)
+    - diff 대신 savgol filter 사용(ppg_abp_datasets_peak_50_with_filter.npz)
 
-#### To do list
-1. dataset 범위 전체로 
-2. epoch 늘리고
-3. Optimizer 변경
-4. lr scheduler 사용
-
-
-
+3. Filter 사용한 데이터셋 결과 20 epoch
+    - 생성된 ppg와 생성된 abp <br/>
+        ![segment](./img/code/ppg_abp.png) <br/>
+    - 생성된 abp 5개 출력 <br/>
+        ![segment](./img/code/compared_abp.png) <br/>
+    - 생성된 abp에 필터를 사용해봄<br/>
+        ![segment](./img/code/compared_abp_after_filter.png) <br/>
 
 
 
