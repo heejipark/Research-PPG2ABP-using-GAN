@@ -2,6 +2,7 @@
 This repository aims to research PPG2ABP using GANs.
 
 # Terminology
+<img src="./img/code/qrs.png" height=300 width=300><br>
 |Abbreviation|Word|Meaning|
 |------------|----|-------|
 |BP     |Blood pressure     |Literally, blood pressure.|
@@ -9,10 +10,6 @@ This repository aims to research PPG2ABP using GANs.
 |PPG    |Photoplethysmogram |PPG can be used to detect blood volume changes in the microvascular bed of tissue.|
 |ABP    |Arterial Blood Pressure|ABP is defined as the force that is exerted by the blood on the arterial wall.|
 |PTT    |Pulse Transit Time |PPT is the time taken for the arterial pulse pressure wave to travel from the aortic valve(대동맥 판막) to a peripheral site(말초).|
-
-<br/>
-
-![segment](./img/code/qrs.png) 
 <br/>
 <br/>
 
@@ -186,10 +183,36 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
 3. Filter 사용한 데이터셋 결과 20 epoch
     - 생성된 ppg와 생성된 abp <br/>
         ![segment](./img/code/ppg_abp.png) <br/>
-    - 생성된 abp 5개 출력 <br/>
-        ![segment](./img/code/compared_abp.png) <br/>
-    - 생성된 abp에 필터를 사용해봄<br/>
-        ![segment](./img/code/compared_abp_after_filter.png) <br/>
+    - |생성된 abp 5개 출력|생성된 abp에 golay 필터 추가|
+      |------------------|--------------|
+      |<img src="./img/code/compared_abp.png" height=700 width=500>|<img src="./img/code/compared_abp_after_filter.png" height=700 width=500> |
 
 
 
+#### Note (Update 07.12. 2022)
+- colab + epoch 30 + 100명의 환자 데이터
+- 어제와의 차이점
+1. 모델 구조를 싹 바꿈.
+    - padding 제거
+    - Channel, Layer수 변경
+    <code> 
+    # C = Conv1d,  R = Residual Block (Conv1d x 2)
+    (1) Generator(Encoder) -> C32 - C64 - C128 - C128, R128 - R128 - R128 - R128 - R128 - R128 - R128 - R128
+    (2) Generator(Decoder) -> C128, C64, C32
+    (3) Discriminator -> C32 - C64 - C128 - C256 - C1
+    </code>
+
+2. Filter 대신 diff 사용한 데이터셋 결과 30 epoch
+    - 생성된 ppg와 생성된 abp <br/>
+        ![segment](./img/code/) <br/>
+    - |생성된 abp 5개 출력|생성된 abp에 golay 필터 추가|
+      |------------------|--------------|
+      |<img src="./img/code/.png" height=700 width=500>|<img src="./img/code/.png" height=700 width=500> |
+
+3. Filter 사용한 데이터셋 결과 30 epoch
+    - 생성된 ppg와 생성된 abp <br/>
+        ![segment](./img/code/ppg_abp.png) <br/>
+    - |생성된 abp 5개 출력|생성된 abp에 golay 필터 추가|
+      |------------------|--------------|
+      |<img src="./img/code/.png" height=700 width=500>|<img src="./img/code/.png" height=700 width=500> |
+   
