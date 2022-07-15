@@ -25,6 +25,9 @@ import torch.utils.data
 from torch.utils.data import DataLoader, TensorDataset
 from torch.optim.lr_scheduler import LambdaLR
 
+# Set CUDA -------------------------------------------------------------------------------------------------------------------
+os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
+
 
 # Model parameters -----------------------------------------------------------------------------------------------------------
 parser = argparse.ArgumentParser()
@@ -143,8 +146,8 @@ for epoch in range(opt.epoch, opt.n_epochs):
         
         
         # 1. GAN loss
-        loss_ppg = criterion_gan(discFakeppg, real_ppg_3d)
-        loss_abp = criterion_gan(discFakeabp, real_abp_3d)
+        loss_ppg = criterion_gan(discFakeppg, torch.ones_like(discFakeppg))
+        loss_abp = criterion_gan(discFakeabp, torch.ones_like(discFakeabp))
         
         
         # 2. Cycle loss

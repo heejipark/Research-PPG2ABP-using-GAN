@@ -8,6 +8,7 @@ from model import Discriminator
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from visualization import graph
+import os
 
 # Model parameters -----------------------------------------------------------------------------------------------------------
 parser = argparse.ArgumentParser()
@@ -20,6 +21,9 @@ parser.add_argument('--ppg_test', type=str, default='/ppg_test.pth', help='save 
 parser.add_argument('--abp_test', type=str, default='/abp_test.pth', help='save abp test datasets')
 parser.add_argument('--output', type=str, default='/output/.pth', help='save abp test datasets')
 opt = parser.parse_args()
+
+# CUDA
+os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
 
 ## Load test dataset
 ppg_test = torch.load(opt.ppg_test)
