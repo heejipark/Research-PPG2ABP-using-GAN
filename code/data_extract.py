@@ -19,7 +19,7 @@ parser.add_argument('--SRATE', type=int, default=100, help='srate')
 parser.add_argument('--MAX_CASE', type=int, default=50, help='Maximum number of patients')
 parser.add_argument('--SEC', type=int, default=25, help='seconds')
 parser.add_argument('--case_sample', type=int, default=0, help='Number of valid case')
-parser.add_argument('--cachefile', type=str, default='datasets_100', help='File name for store')
+parser.add_argument('--cachefile', type=str, default='datasets_100.npz', help='File name for store')
 opt = parser.parse_args()
 
 valid_mask = []

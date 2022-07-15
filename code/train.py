@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 from time import sleep
+import itertools
 import time
 
 import vitaldb
@@ -31,20 +32,19 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
 
 # Model parameters -----------------------------------------------------------------------------------------------------------
 parser = argparse.ArgumentParser()
-parser.add_argument('--datapath', type=str, default='data1.npz', help='datasets location')
+parser.add_argument('--datapath', type=str, default='datasets.npz', help='datasets location')
 parser.add_argument('--epoch', type=int, default=0, help='starting epoch')
 parser.add_argument('--n_epochs', type=int, default=10, help='number of epochs of training')
 parser.add_argument('--batch_size', type=int, default=32, help='size of the batches')
 parser.add_argument('--lr', type=float, default=0.0002, help='initial learning rate')
 parser.add_argument('--decay_epoch', type=int, default=100, help='epoch to start linearly decaying the learning rate to 0')
-parser.add_argument('--workers', type=int, default=2, help='the number of workers')
 parser.add_argument('--input_nc', type=int, default=1, help='number of channels of input data')
 parser.add_argument('--output_nc', type=int, default=1, help='number of channels of output data')
 parser.add_argument('--beta1', type=int, default=1, help='betal value for Adam optimizer')
 parser.add_argument('--seed', type=int, default=30, help='random seed')
 parser.add_argument('--model_info', type=str, default='/models_info.pth', help='save models\' information')
-parser.add_argument('--ppg_test', type=str, default='/ppg_test.pth', help='save ppg test datasets')
-parser.add_argument('--abp_test', type=str, default='/abp_test.pth', help='save abp test datasets')
+parser.add_argument('--ppg_test', type=str, default='ppg_test.pth', help='save ppg test datasets')
+parser.add_argument('--abp_test', type=str, default='abp_test.pth', help='save abp test datasets')
 opt = parser.parse_args()
 
 ## Set the computation device -----------------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ netD_ABP.apply(weights_init_normal)
 
 # Hyperparameter -----------------------------------------------------------------------------------------------------------
 ## Optimizers
-optimizer_G = optim.Adam(opt.itertools.chain(netG_P2A.parameters(), netG_A2P.parameters()), lr=opt.lr, betas=(0.5, 0.999))
+optimizer_G = optim.Adam(itertools.chain(netG_P2A.parameters(), netG_A2P.parameters()), lr=opt.lr, betas=(0.5, 0.999))
 optimizer_D_PPG = optim.Adam(netD_ABP.parameters(), lr=opt.lr, betas=(0.5, 0.999))
 optimizer_D_ABP = optim.Adam(netD_PPG.parameters(), lr=opt.lr, betas=(0.5, 0.999))
 
@@ -106,7 +106,7 @@ norm_abp_train = torch.tensor(norm_abp_train, dtype=torch.float32)
 ds_train = TensorDataset(norm_ppg_train, norm_abp_train)
 
 ## Create the dataloader
-loader_train = DataLoader(ds_train, batch_size=opt.batch_size, shuffle=False, num_workers=opt.workers)
+loader_train = DataLoader(ds_train, batch_size=opt.batch_size, shuffle=False)
 
 
 # Train -----------------------------------------------------------------------------------------------------------
@@ -214,7 +214,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
             'netD_ABP_state_dict': netD_ABP.state_dict(), 
             'netD_PPG_state_dict': netD_PPG.state_dict(), 
             'optimizer_G_state_dict': optimizer_G.state_dict(),
-            'optimizer_D_PPG_state_dict': optimizer_D_PPG.state_dict()
+            'optimizer_D_PPG_state_dict': optimizer_D_PPG.state_dict(),
             'optimizer_D_ABP_state_dict': optimizer_D_ABP.state_dict(),
             'criterion_gan_state_dict': criterion_gan.state_dict(),
             'criterion_identity_state_dict': criterion_identity.state_dict(),
