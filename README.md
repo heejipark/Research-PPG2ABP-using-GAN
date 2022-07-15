@@ -202,17 +202,3 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
     (3) Discriminator -> C32 - C64 - C128 - C256 - C1
     </code>
 
-2. Filter 대신 diff 사용한 데이터셋 결과 30 epoch
-    - 생성된 ppg와 생성된 abp <br/>
-        ![segment](./img/code/) <br/>
-    - |생성된 abp 5개 출력|생성된 abp에 golay 필터 추가|
-      |------------------|--------------|
-      |<img src="./img/code/.png" height=700 width=500>|<img src="./img/code/.png" height=700 width=500> |
-
-3. Filter 사용한 데이터셋 결과 30 epoch
-    - 생성된 ppg와 생성된 abp <br/>
-        ![segment](./img/code/ppg_abp.png) <br/>
-    - |생성된 abp 5개 출력|생성된 abp에 golay 필터 추가|
-      |------------------|--------------|
-      |<img src="./img/code/.png" height=700 width=500>|<img src="./img/code/.png" height=700 width=500> |
-   

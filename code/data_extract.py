@@ -79,7 +79,6 @@ for cid in tqdm(range(1, opt.MAX_CASE+1)):
             except:
                 continue
 
-
 #### After Preprocessing ------------------------------------
 from scipy.signal import savgol_filter
 ppg_sets = savgol_filter(ppg_sets, 31, 3)

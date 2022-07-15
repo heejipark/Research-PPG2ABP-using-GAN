@@ -17,7 +17,6 @@ def graph(k):
     fake_abp_sets = result['fake_abp']
     fake_ppg_sets = result['fake_ppg']
 
-
     # Plot generated PPG and generated ABP --------------------------------------
     plt.figure(figsize=(20,5))
     plt.subplot(2,1,1)
