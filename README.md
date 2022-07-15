@@ -149,7 +149,7 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
         loss_abp = criterion_gan(discFakeabp, real_abp_3d)
     ```
 
-#### Note (Update 07.11. 2022)
+#### Note (Update 07.11-12. 2022)
 - colab + epoch 20 + 100명의 환자 데이터
 - 어제와의 차이점
 1. PPG 첫번째 peak와 ABP 두번째 peak를 매칭시킴.
@@ -189,7 +189,7 @@ Also, here are the examples using the Golay filter with multiple window sizes [1
 
 
 
-#### Note (Update 07.12. 2022)
+#### Note (Update 07.13-14. 2022)
 - colab + epoch 30 + 100명의 환자 데이터
 - 어제와의 차이점
 1. 모델 구조를 싹 바꿈.
