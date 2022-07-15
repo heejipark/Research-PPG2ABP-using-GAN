@@ -3,7 +3,7 @@ paper/
 .ipynb_checkpoints/
 __pycache__/
 temporary/
-coding/
+code/
 colab/
 datasets/
 
