@@ -17,10 +17,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--PPG', type=str, default='SNUADC/PLETH', help='track name for PPG')
 parser.add_argument('--ABP', type=str, default='SNUADC/ART', help='track name for ABP')
 parser.add_argument('--SRATE', type=int, default=100, help='srate')
-parser.add_argument('--MAX_CASE', type=int, default=1000, help='Maximum number of patients')
+parser.add_argument('--MAX_CASE', type=int, default=2000, help='Maximum number of patients')
 parser.add_argument('--SEC', type=int, default=25, help='seconds')
 parser.add_argument('--case_sample', type=int, default=0, help='Number of valid case')
-parser.add_argument('--cachefile', type=str, default='datasets.npz', help='File name for store')
+parser.add_argument('--cachefile', type=str, default='./../datasets/2000ppl.npz', help='File name for store')
 opt = parser.parse_args()
 
 valid_mask = []

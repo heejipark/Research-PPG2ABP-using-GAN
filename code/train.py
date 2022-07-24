@@ -32,7 +32,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '1, 2'
 
 # Model parameters -----------------------------------------------------------------------------------
 parser = argparse.ArgumentParser()
-parser.add_argument('--datapath', type=str, default='datasets.npz', help='datasets location')
+parser.add_argument('--datapath', type=str, default='./../datasets/2000ppl.npz', help='datasets location')
 parser.add_argument('--epoch', type=int, default=0, help='starting epoch')
 parser.add_argument('--n_epochs', type=int, default=1, help='number of epochs of training')
 parser.add_argument('--batch_size', type=int, default=32, help='size of the batches')
@@ -42,9 +42,9 @@ parser.add_argument('--input_nc', type=int, default=1, help='number of channels 
 parser.add_argument('--output_nc', type=int, default=1, help='number of channels of output data')
 parser.add_argument('--beta1', type=int, default=1, help='betal value for Adam optimizer')
 parser.add_argument('--seed', type=int, default=30, help='random seed')
-parser.add_argument('--model_info', type=str, default='models_info.pth', help='save models\' information')
-parser.add_argument('--ppg_test', type=str, default='ppg_test.pickle', help='save ppg test datasets')
-parser.add_argument('--abp_test', type=str, default='abp_test.pickle', help='save abp test datasets')
+parser.add_argument('--model_info', type=str, default='./../model/models_info.pth', help='save models\' information')
+parser.add_argument('--ppg_test', type=str, default='./../datasets/ppg_test.pickle', help='save ppg test datasets')
+parser.add_argument('--abp_test', type=str, default='./../datasets/abp_test.pickle', help='save abp test datasets')
 opt = parser.parse_args()
 
 ## Set the computation device -----------------------------------------------------------------------

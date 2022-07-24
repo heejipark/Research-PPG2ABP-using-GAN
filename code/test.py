@@ -15,9 +15,9 @@ import pickle
 parser = argparse.ArgumentParser()
 parser.add_argument('--input_nc', type=int, default=1, help='number of channels of input data')
 parser.add_argument('--output_nc', type=int, default=1, help='number of channels of output data')
-parser.add_argument('--model_info', type=str, default='/models_info.pth', help='checkpoint for models')
-parser.add_argument('--ppg_test', type=str, default='/ppg_test.pikle', help='save ppg test datasets')
-parser.add_argument('--abp_test', type=str, default='/abp_test.pikle', help='save abp test datasets')
+parser.add_argument('--model_info', type=str, default='./../model/models_info.pth', help='checkpoint for models')
+parser.add_argument('--ppg_test', type=str, default='./../datasets/ppg_test.pikle', help='save ppg test datasets')
+parser.add_argument('--abp_test', type=str, default='./../datasets/abp_test.pickle', help='save abp test datasets')
 parser.add_argument('--output', type=str, default='/output/', help='save datasets into output folder')
 opt = parser.parse_args()
 

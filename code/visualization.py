@@ -5,10 +5,10 @@ from scipy.signal import savgol_filter
 
 def graph(k):
     # Path ---------------------------------------------------------------------
-    datapath = 'data'+ k +'.npz'
-    imgpath1 = 'ppg_abp.png'
-    imgpath2 = 'compared_generated_abp.png'
-    imgpath3 = 'compared_generated_abp_with_filter.png'
+    datapath = './../output/data'+ str(k) +'.npz'
+    imgpath1 = './../graph/ppg_abp.png'
+    imgpath2 = './../graph/compared_generated_abp.png'
+    imgpath3 = './../graph/compared_generated_abp_with_filter.png'
 
     # Load data -------------------------------------------------------------------
     result = np.load(datapath)
