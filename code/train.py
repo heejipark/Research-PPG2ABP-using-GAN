@@ -29,7 +29,6 @@ from torch.optim.lr_scheduler import LambdaLR
 # Set CUDA -------------------------------------------------------------------------------------------------------------------
 os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
 
-
 # Model parameters -----------------------------------------------------------------------------------------------------------
 parser = argparse.ArgumentParser()
 parser.add_argument('--datapath', type=str, default='datasets.npz', help='datasets location')
@@ -83,7 +82,7 @@ lr_scheduler_D_ABP = torch.optim.lr_scheduler.LambdaLR(optimizer_D_ABP, lr_lambd
 # Initaliza loss value
 min_loss_G = float('inf')
 
-# DataLoader      -----------------------------------------------------------------------------------------------------------
+# DataLoader     -----------------------------------------------------------------------------------------------------------
 ## Load cache file 
 ppg_abp_sets = np.load(opt.datapath)
 ppg_sets = ppg_abp_sets['ppg_sets']
@@ -107,7 +106,6 @@ ds_train = TensorDataset(norm_ppg_train, norm_abp_train)
 
 ## Create the dataloader
 loader_train = DataLoader(ds_train, batch_size=opt.batch_size, shuffle=False)
-
 
 # Train -----------------------------------------------------------------------------------------------------------
 for epoch in range(opt.epoch, opt.n_epochs):
@@ -135,21 +133,18 @@ for epoch in range(opt.epoch, opt.n_epochs):
         recovered_abp = netG_P2A(fake_ppg)
         
         identity_abp = netG_P2A(real_abp_3d)
-        identity_ppg = netG_A2P(real_ppg_3d)
-        
+        identity_ppg = netG_A2P(real_ppg_3d)        
         
         # Backward generator path --------------------------
         discFakeppg = netD_PPG(fake_ppg)
         discFakeabp = netD_ABP(fake_abp)
         discCycleppg = netD_PPG(recovered_ppg)
-        discCycleabp = netD_ABP(recovered_abp)
-        
+        discCycleabp = netD_ABP(recovered_abp)    
         
         # 1. GAN loss
         loss_ppg = criterion_gan(discFakeppg, torch.ones_like(discFakeppg))
         loss_abp = criterion_gan(discFakeabp, torch.ones_like(discFakeabp))
-        
-        
+               
         # 2. Cycle loss
         loss_cycle_abp = criterion_cycle(recovered_abp, real_abp_3d)
         loss_cycle_ppg = criterion_cycle(recovered_ppg, real_ppg_3d)
@@ -170,7 +165,6 @@ for epoch in range(opt.epoch, opt.n_epochs):
         
         
         # Backward generator path --------------------------
-        
         discFakeppg = netD_PPG(fake_ppg.detach())
         discRealppg = netD_PPG(real_ppg_3d)
         

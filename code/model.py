@@ -28,7 +28,6 @@ class ResidualBlock(nn.Module):
     def forward(self, x):
         return x + self.conv_block(x)
 
-
 # Generator --------------------------------------------------------------------
 class Generator(nn.Module):
     def __init__(self, input_nc, output_nc, n_residual_blocks=9):
@@ -36,8 +35,10 @@ class Generator(nn.Module):
     
         # Initial convolution block       
         self.model1 = nn.Sequential(
-                 nn.ReflectionPad1d(1),
-                 nn.Conv1d(input_nc, 64, 3)
+                 nn.ReflectionPad1d(3),
+                 nn.Conv1d(input_nc, 64, 7),
+                 nn.InstanceNorm1d(64),
+                 nn.ReLU(inplace=True)
                  )
 
         # Encoder - Downsampling
@@ -45,9 +46,9 @@ class Generator(nn.Module):
         out_features = in_features*2
         model2 = []
         for _ in range(2):
-            model2 += [nn.Conv1d(in_features, out_features, 3, stride=2, padding=1),
+            model2 += [nn.Conv1d(in_features, out_features, kernel_size=3, stride=2, padding=1),
                        nn.InstanceNorm1d(out_features),
-                       nn.LeakyReLU(0.2, inplace=True)]
+                       nn.ReLU(inplace=True)]
             in_features = out_features
             out_features = in_features*2
         self.model2 = nn.Sequential(*model2)
@@ -64,15 +65,15 @@ class Generator(nn.Module):
         for _ in range(2):
             model4 += [nn.ConvTranspose1d(in_features, out_features, 3, stride=2, padding=1, output_padding=1),
                       nn.InstanceNorm1d(out_features),
-                      nn.LeakyReLU(0.2, inplace=True)]
+                      nn.ReLU(inplace=True)]
             in_features = out_features
             out_features = in_features//2
         self.model4 = nn.Sequential(*model4)
         
         # Output layer
         self.model5 = nn.Sequential(
-                  nn.ReflectionPad1d(1),
-                  nn.Conv1d(64, output_nc, 3),
+                  nn.ReflectionPad1d(3),
+                  nn.Conv1d(64, output_nc, 7),
                   nn.Tanh())
 
     def forward(self, x):
@@ -83,36 +84,35 @@ class Generator(nn.Module):
         out = self.model5(x)
         return out
 
-
-
 # Discriminator --------------------------------------------------------------------
 class Discriminator(nn.Module):
     def __init__(self, input_nc):
         super(Discriminator, self).__init__()
 
         # A bunch of convolutions one after another
-        model = [nn.Conv1d(input_nc, 64, 1, stride=2, padding=1),
+        model = [nn.Conv1d(input_nc, 64, 4, stride=2, padding=1),
                  nn.LeakyReLU(0.2, inplace=True) ]
 
-        model += [nn.Conv1d(64, 128, 1, stride=2, padding=1),
+        model += [nn.Conv1d(64, 128, 4, stride=2, padding=1),
                   nn.InstanceNorm1d(128), 
                   nn.LeakyReLU(0.2, inplace=True)]
 
-        model += [nn.Conv1d(128, 256, 1, stride=2, padding=1),
+        model += [nn.Conv1d(128, 256, 4, stride=2, padding=1),
                   nn.InstanceNorm1d(256), 
                   nn.LeakyReLU(0.2, inplace=True)]
 
-        model += [nn.Conv1d(256, 512, 1, padding=1),
+        model += [nn.Conv1d(256, 512, 4, padding=1),
                   nn.InstanceNorm1d(512), 
                   nn.LeakyReLU(0.2, inplace=True)]
 
         # FCN classification layer
-        model += [nn.Conv1d(512, 1, 1, padding=1)]
-        model += [nn.Sigmoid()]
+        model += [nn.Conv1d(512, 1, 4, padding=1),
+                  nn.Sigmoid()]
         self.model = nn.Sequential(*model)
 
     def forward(self, x):
-        x =  self.model(x)
+        x = self.model(x)
         # Average pooling and flatten
-        
         return F.avg_pool1d(x, x.size()[2:]).view(x.size()[0], -1)
+
+

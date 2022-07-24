@@ -85,4 +85,3 @@ ppg_sets = savgol_filter(ppg_sets, 31, 3)
 abp_sets = savgol_filter(abp_sets, 31, 3)
 
 np.savez(opt.cachefile, ppg_sets=ppg_sets, abp_sets=abp_sets) # Save cahce file
-

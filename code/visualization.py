@@ -30,7 +30,6 @@ def graph(k):
     plt.legend()
     plt.savefig(imgpath2)
 
-
     # Plot comparison between generated ABP and ground-truth ABP" ----------------
     for i in range(0,10):
         plt.figure(figsize=(20,5))
@@ -39,7 +38,6 @@ def graph(k):
         plt.legend()
         plt.show()
     plt.savefig(imgpath2)
-
 
     # Plot comparison between generated and filtered ABP and ground-truth ABP" ----
     fake_filtered_abp = savgol_filter(fake_abp_sets, 31, 3)
