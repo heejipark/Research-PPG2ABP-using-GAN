@@ -9,25 +9,26 @@ from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from visualization import graph
 import os
+import pickle
 
 # Model parameters -----------------------------------------------------------------------------------------------------------
 parser = argparse.ArgumentParser()
-parser.add_argument('--datapath', type=str, default='data1.npz', help='datasets location')
 parser.add_argument('--input_nc', type=int, default=1, help='number of channels of input data')
 parser.add_argument('--output_nc', type=int, default=1, help='number of channels of output data')
 parser.add_argument('--model_info', type=str, default='/models_info.pth', help='checkpoint for models')
-parser.add_argument('--test_dataset', type=str, default='/loader_test.pth', help='save test datasets')
-parser.add_argument('--ppg_test', type=str, default='/ppg_test.pth', help='save ppg test datasets')
-parser.add_argument('--abp_test', type=str, default='/abp_test.pth', help='save abp test datasets')
-parser.add_argument('--output', type=str, default='/output/.pth', help='save abp test datasets')
+parser.add_argument('--ppg_test', type=str, default='/ppg_test.pikle', help='save ppg test datasets')
+parser.add_argument('--abp_test', type=str, default='/abp_test.pikle', help='save abp test datasets')
+parser.add_argument('--output', type=str, default='/output/', help='save datasets into output folder')
 opt = parser.parse_args()
 
 # CUDA
-os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1, 2'
 
 ## Load test dataset
-ppg_test = torch.load(opt.ppg_test)
-abp_test = torch.load(opt.abp_test)
+with open(opt.ppg_test, 'rb') as fr1:
+    ppg_test = pickle.load(fr1)
+with open(opt.abp_test, 'rb') as fr2:
+    abp_test = pickle.load(fr2)
 
 ## Normalization
 norm_ppg_test, norm_abp_test =  minMax(ppg_test), minMax(abp_test)
@@ -40,7 +41,7 @@ norm_abp_test = torch.tensor(norm_abp_test, dtype=torch.float32)
 ds_test = TensorDataset(norm_ppg_test, norm_abp_test)
 
 ## Create the dataloader
-loader_test = DataLoader(ds_test, batch_size=opt.batch_size, shuffle=False, num_workers=opt.workers)
+loader_test = DataLoader(ds_test, batch_size=opt.batch_size, shuffle=False)
 
 # Set the computation device -----------------------------------------------------------------------------------------------------------
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -63,8 +64,7 @@ epoch = checkpoint['epoch_info']
 netG_P2A.eval()
 netG_A2P.eval()
 
-
-# Create output dirs if they don't exist
+# Create output dirs if they don't exist 
 dataNum = 1
 for real_ppg, real_abp in loader_test:
     # Set model input

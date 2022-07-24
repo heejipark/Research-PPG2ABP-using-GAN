@@ -1,4 +1,4 @@
-# Required libraries -----------------------------------------------------------------------------------------------------------
+# Required libraries ---------------------------------------------------------------------------------
 import os
 import random
 import argparse
@@ -8,6 +8,7 @@ from tqdm import tqdm
 from time import sleep
 import itertools
 import time
+import pickle
 
 import vitaldb
 from model import Generator
@@ -26,14 +27,14 @@ import torch.utils.data
 from torch.utils.data import DataLoader, TensorDataset
 from torch.optim.lr_scheduler import LambdaLR
 
-# Set CUDA -------------------------------------------------------------------------------------------------------------------
-os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
+# Set CUDA -------------------------------------------------------------------------------------------
+os.environ['CUDA_VISIBLE_DEVICES'] = '1, 2'
 
-# Model parameters -----------------------------------------------------------------------------------------------------------
+# Model parameters -----------------------------------------------------------------------------------
 parser = argparse.ArgumentParser()
 parser.add_argument('--datapath', type=str, default='datasets.npz', help='datasets location')
 parser.add_argument('--epoch', type=int, default=0, help='starting epoch')
-parser.add_argument('--n_epochs', type=int, default=10, help='number of epochs of training')
+parser.add_argument('--n_epochs', type=int, default=1, help='number of epochs of training')
 parser.add_argument('--batch_size', type=int, default=32, help='size of the batches')
 parser.add_argument('--lr', type=float, default=0.0002, help='initial learning rate')
 parser.add_argument('--decay_epoch', type=int, default=100, help='epoch to start linearly decaying the learning rate to 0')
@@ -41,16 +42,16 @@ parser.add_argument('--input_nc', type=int, default=1, help='number of channels 
 parser.add_argument('--output_nc', type=int, default=1, help='number of channels of output data')
 parser.add_argument('--beta1', type=int, default=1, help='betal value for Adam optimizer')
 parser.add_argument('--seed', type=int, default=30, help='random seed')
-parser.add_argument('--model_info', type=str, default='/models_info.pth', help='save models\' information')
-parser.add_argument('--ppg_test', type=str, default='ppg_test.pth', help='save ppg test datasets')
-parser.add_argument('--abp_test', type=str, default='abp_test.pth', help='save abp test datasets')
+parser.add_argument('--model_info', type=str, default='models_info.pth', help='save models\' information')
+parser.add_argument('--ppg_test', type=str, default='ppg_test.pickle', help='save ppg test datasets')
+parser.add_argument('--abp_test', type=str, default='abp_test.pickle', help='save abp test datasets')
 opt = parser.parse_args()
 
-## Set the computation device -----------------------------------------------------------------------------------------------------------
+## Set the computation device -----------------------------------------------------------------------
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 Tensor = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.Tensor
 
-# Initialize models -------------------------------------------------------------------------------------------------
+# Initialize models ---------------------------------------------------------------------------------
 ## Initalize Generator and Discriminator
 netG_P2A = Generator(opt.input_nc, opt.output_nc).to(device)
 netG_A2P = Generator(opt.output_nc, opt.input_nc).to(device)
@@ -63,7 +64,7 @@ netG_A2P.apply(weights_init_normal)
 netD_PPG.apply(weights_init_normal)
 netD_ABP.apply(weights_init_normal)
 
-# Hyperparameter -----------------------------------------------------------------------------------------------------------
+# Hyperparameter -------------------------------------------------------------------------------------
 ## Optimizers
 optimizer_G = optim.Adam(itertools.chain(netG_P2A.parameters(), netG_A2P.parameters()), lr=opt.lr, betas=(0.5, 0.999))
 optimizer_D_PPG = optim.Adam(netD_ABP.parameters(), lr=opt.lr, betas=(0.5, 0.999))
@@ -82,17 +83,21 @@ lr_scheduler_D_ABP = torch.optim.lr_scheduler.LambdaLR(optimizer_D_ABP, lr_lambd
 # Initaliza loss value
 min_loss_G = float('inf')
 
-# DataLoader     -----------------------------------------------------------------------------------------------------------
+# DataLoader ------------------------------------------------------------------------------------------
 ## Load cache file 
 ppg_abp_sets = np.load(opt.datapath)
 ppg_sets = ppg_abp_sets['ppg_sets']
 abp_sets = ppg_abp_sets['abp_sets']
-ppg_abp_sets.close()                    # For memory efficiency, close the file
+ppg_abp_sets.close()   # For memory efficiency, close the file
 
 ## Split data into training and testing datasets
 ppg_train, ppg_test, abp_train, abp_test = train_test_split(ppg_sets, abp_sets, test_size=0.2, random_state=opt.seed)
-torch.save(ppg_test, opt.ppg_test)
-torch.save(abp_test, opt.abp_test)
+
+# Save testdata as a pickle file
+with open(opt.ppg_test,'wb') as fw1:
+    pickle.dump(ppg_test, fw1)
+with open(opt.abp_test,'wb') as fw2:
+    pickle.dump(abp_test, fw2)
 
 ## Normalization
 norm_ppg_train, norm_abp_train = minMax(ppg_train), minMax(abp_train)
@@ -107,7 +112,7 @@ ds_train = TensorDataset(norm_ppg_train, norm_abp_train)
 ## Create the dataloader
 loader_train = DataLoader(ds_train, batch_size=opt.batch_size, shuffle=False)
 
-# Train -----------------------------------------------------------------------------------------------------------
+# Train ------------------------------------------------------------------------------------------------
 for epoch in range(opt.epoch, opt.n_epochs):
     print("%d epoch-------------------------------"%(epoch+1))
     for real_ppg, real_abp in tqdm(loader_train):
@@ -120,7 +125,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
         # 4. Total loss
         #########################################
         
-        # Forward------------------------------------------
+        # Forward ------------------------------------------
         # Transform the datasets
         real_ppg_3d = real_ppg.unsqueeze(0).transpose(0,1).to(device)
         real_abp_3d = real_abp.unsqueeze(0).transpose(0,1).to(device)
@@ -135,7 +140,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
         identity_abp = netG_P2A(real_abp_3d)
         identity_ppg = netG_A2P(real_ppg_3d)        
         
-        # Backward generator path --------------------------
+        # Backward generator path --------------------------------------------
         discFakeppg = netD_PPG(fake_ppg)
         discFakeabp = netD_ABP(fake_abp)
         discCycleppg = netD_PPG(recovered_ppg)
@@ -164,7 +169,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
         optimizer_G.step()
         
         
-        # Backward generator path --------------------------
+        # Backward generator path --------------------------------------------
         discFakeppg = netD_PPG(fake_ppg.detach())
         discRealppg = netD_PPG(real_ppg_3d)
         
@@ -188,10 +193,11 @@ for epoch in range(opt.epoch, opt.n_epochs):
         loss_D_ABP.requires_grad_(True)
         loss_D_ABP.backward()
         optimizer_D_ABP.step()
-      
+
     # Print loss
-    print("Epoch [{}/{}], loss_G: {:.4f}, loss_D_ABP: {:.4f}, loss_D_PPG: {:.4f}".format(
-           epoch+1, opt.n_epochs, loss_G, loss_D_ABP, loss_D_PPG))
+    print('Epoch [{}/{}]'.format(epoch+1, opt.n_epochs))
+    print("\tloss_G: {:.4f} | loss_D_ABP: {:.4f} | loss_D_PPG: {:.4f}".format(
+           loss_G, loss_D_ABP, loss_D_PPG))
 
     # Update learning rates
     lr_scheduler_G.step()
@@ -200,21 +206,22 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
     # Save models checkpoints
     if min_loss_G >= loss_G:
-      min_loss_G = loss_G
-      torch.save({
-            'epoch_info': epoch,
-            'netG_P2A_state_dict': netG_P2A.state_dict(),
-            'netG_A2P_state_dict': netG_A2P.state_dict(), 
-            'netD_ABP_state_dict': netD_ABP.state_dict(), 
-            'netD_PPG_state_dict': netD_PPG.state_dict(), 
-            'optimizer_G_state_dict': optimizer_G.state_dict(),
-            'optimizer_D_PPG_state_dict': optimizer_D_PPG.state_dict(),
-            'optimizer_D_ABP_state_dict': optimizer_D_ABP.state_dict(),
-            'criterion_gan_state_dict': criterion_gan.state_dict(),
-            'criterion_identity_state_dict': criterion_identity.state_dict(),
-            'criterion_cycle_state_dict': criterion_cycle.state_dict(),
-            'lr_scheduler_G_state_dict': lr_scheduler_G.state_dict(),
-            'lr_scheduler_D_PPG_state_dict': lr_scheduler_D_PPG.state_dict(),
-            'lr_scheduler_D_ABP_state_dict': lr_scheduler_D_ABP.state_dict()
-      }, opt.model_info)
+        min_loss_G = loss_G
+        checkpoint = {
+                        'epoch_info': epoch,
+                        'netG_P2A_state_dict': netG_P2A.state_dict(),
+                        'netG_A2P_state_dict': netG_A2P.state_dict(), 
+                        'netD_ABP_state_dict': netD_ABP.state_dict(), 
+                        'netD_PPG_state_dict': netD_PPG.state_dict(), 
+                        'optimizer_G_state_dict': optimizer_G.state_dict(),
+                        'optimizer_D_PPG_state_dict': optimizer_D_PPG.state_dict(),
+                        'optimizer_D_ABP_state_dict': optimizer_D_ABP.state_dict(),
+                        'criterion_gan_state_dict': criterion_gan.state_dict(),
+                        'criterion_identity_state_dict': criterion_identity.state_dict(),
+                        'criterion_cycle_state_dict': criterion_cycle.state_dict(),
+                        'lr_scheduler_G_state_dict': lr_scheduler_G.state_dict(),
+                        'lr_scheduler_D_PPG_state_dict': lr_scheduler_D_PPG.state_dict(),
+                        'lr_scheduler_D_ABP_state_dict': lr_scheduler_D_ABP.state_dict()
+                    }
+        torch.save(checkpoint, opt.model_info)
       
